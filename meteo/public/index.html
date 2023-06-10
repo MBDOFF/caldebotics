@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Meteo Display</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="pureknob.js"></script>
+  <style>
+    body {
+      text-align: center;
+      font-family: Verdana, Geneva, sans-serif; font-size: 14px;
+      font-style: normal; font-variant: normal;
+      font-weight: 400;
+      line-height: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Meteo Display</h1>
+  <div id="temp"></div>
+  <div id="humidity"></div>
+
+  <script>
+  const knob = pureknob.createKnob(300, 300);
+
+  knob.setProperty('val', 0);
+  // Set properties.
+  knob.setProperty('angleStart', -0.75 * Math.PI);
+  knob.setProperty('angleEnd', 0.75 * Math.PI);
+  knob.setProperty('colorFG', '#0066ff');
+  knob.setProperty('trackWidth', 0.4);
+  knob.setProperty('readonly', true);
+  knob.setProperty('valMin', -20);
+  knob.setProperty('valMax', 40);
+  knob.setProperty('textScale', 0.75);
+  knob.setProperty('fnValueToString', function(value) {
+    let string = value.toString();
+
+    const result = string + "°C";
+    return result;
+  });
+
+
+  // Create element node.
+  const node = knob.node();
+  // Add it to the DOM.
+  const elem = document.getElementById('temp');
+  elem.appendChild(node);
+
+  const knob2 = pureknob.createKnob(300, 300);
+
+  knob2.setProperty('val', 0);
+  // Set properties.
+  knob2.setProperty('angleStart', -0.75 * Math.PI);
+  knob2.setProperty('angleEnd', 0.75 * Math.PI);
+  knob2.setProperty('colorFG', '#00ccff');
+  knob2.setProperty('trackWidth', 0.4);
+  knob2.setProperty('readonly', true);
+  knob2.setProperty('valMin', 0);
+  knob2.setProperty('valMax', 100);
+  knob2.setProperty('textScale', 0.75);
+  knob2.setProperty('fnValueToString', function(value) {
+    let string = value.toString();
+
+    const result = string + "%";
+    return result;
+  });
+
+  // Create element node.
+  const node2 = knob2.node();
+  // Add it to the DOM.
+  const elem2 = document.getElementById('humidity');
+  elem2.appendChild(node2);
+
+  function seti(i) {
+    i = Number(i);
+    knob.setValue(i);
+    if (i > 30) {
+      knob.setProperty('colorFG', '#e01b24');
+    }
+    if (i => 10) {
+      if (i <= 30){
+        knob.setProperty('colorFG', '#33cc33');
+      }
+    }
+    if (i < 10) {
+      knob.setProperty('colorFG', '#0066ff');
+    }
+  };
+
+  function cool(key, value) {
+    console.log(key);
+    console.log(value);
+    if (key == "temperature") {
+      seti(value);
+    } else if (key == "humidity") {
+      knob2.setValue(value);
+    }
+  }
+    // Fetch and display data every 800ms
+    setInterval(() => {
+      fetch('/data')
+        .then((response) => response.json())
+        .then((data) => {
+          const html = Object.entries(data)
+            .map(([key, value]) => cool(key, value))
+            .join('');
+
+          $('#dataContainer').html(html);
+        });
+    }, 800);
+  </script>
+</body>
+</html>
