@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Meteo Display</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <h1>Meteo Display</h1>
+  <div id="dataContainer"></div>
+
+  <script>
+    // Fetch and display data every 800ms
+    setInterval(() => {
+      fetch('/data')
+        .then((response) => response.json())
+        .then((data) => {
+          const html = Object.entries(data)
+            .map(([key, value]) => `<p>${key}: ${value}</p>`)
+            .join('');
+
+          $('#dataContainer').html(html);
+        });
+    }, 800);
+  </script>
+</body>
+</html>
