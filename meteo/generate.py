@@ -6,8 +6,10 @@ MAX_DATA_ENTRIES = 50
 
 while True:
     # Generate random data
-    temperature = random.randint(0, 100)
+    temperature = random.randint(-20, 45)
     humidity = random.randint(0, 100)
+    wind = random.randint(0, 150)
+    pressure = random.randint(900, 1100)
 
     # Read existing data from the CSV file
     existing_data = []
@@ -25,12 +27,12 @@ while True:
         existing_data = existing_data[-(MAX_DATA_ENTRIES - 1):]
 
     # Append the new data
-    existing_data.append([temperature, humidity])
+    existing_data.append([temperature, humidity, wind, pressure])
 
     # Write updated data to the CSV file
     with open('data.txt', 'w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(['temperature', 'humidity'])
+        writer.writerow(['temperature', 'humidity', 'wind', 'pressure'])
         writer.writerows(existing_data)
 
     # Wait for 2 seconds

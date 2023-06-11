@@ -1,26 +1,218 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Meteo Display</title>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-</head>
-<body>
-  <h1>Meteo Display</h1>
-  <div id="dataContainer"></div>
+  <head>
+    <title>Meteo Display</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="pureknob.js"></script>
+    <style>
+      body {
+        text-align: center;
+        font-family: Verdana, Geneva, sans-serif;
+        font-size: 14px;
+        font-style: normal;
+        font-variant: normal;
+        font-weight: 500;
+        line-height: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Meteo Display</h1>
+    <div id="temp"></div>
+    <div id="humidity"></div>
+    <div id="wind"></div>
+    <div id="wind-text">Vant Foarte Usor</div>
+    <div id="pressure"></div>
 
-  <script>
-    // Fetch and display data every 800ms
-    setInterval(() => {
-      fetch('/data')
-        .then((response) => response.json())
-        .then((data) => {
-          const html = Object.entries(data)
-            .map(([key, value]) => `<p>${key}: ${value}</p>`)
-            .join('');
+    <script>
+      $("#wind-text").css({ marginTop: "-=140px" });
+      $("#humidity").css({ marginTop: "-=80px" });
+      $("#wind").css({ marginTop: "-=80px" });
+      $("#pressure").css({ marginTop: "40px" });
 
-          $('#dataContainer').html(html);
-        });
-    }, 800);
-  </script>
-</body>
+      const knob = pureknob.createKnob(300, 300);
+      knob.setProperty("val", 0);
+      knob.setProperty("angleStart", -0.75 * Math.PI);
+      knob.setProperty("angleEnd", 0.75 * Math.PI);
+      knob.setProperty("colorFG", "#0066ff");
+      knob.setProperty("trackWidth", 0.4);
+      knob.setProperty("readonly", true);
+      knob.setProperty("valMin", -20);
+      knob.setProperty("valMax", 45);
+      knob.setProperty("textScale", 0.75);
+      knob.setProperty("fnValueToString", function (value) {
+        let string = value.toString();
+        const result = string + "°C";
+        return result;
+      });
+
+      const node = knob.node();
+      const elem = document.getElementById("temp");
+      elem.appendChild(node);
+
+      const knob2 = pureknob.createKnob(300, 300);
+      knob2.setProperty("val", 0);
+      knob2.setProperty("angleStart", -0.75 * Math.PI);
+      knob2.setProperty("angleEnd", 0.75 * Math.PI);
+      knob2.setProperty("colorFG", "#00ccff");
+      knob2.setProperty("trackWidth", 0.4);
+      knob2.setProperty("readonly", true);
+      knob2.setProperty("valMin", 0);
+      knob2.setProperty("valMax", 100);
+      knob2.setProperty("textScale", 0.75);
+      knob2.setProperty("fnValueToString", function (value) {
+        let string = value.toString();
+        const result = string + "%";
+        return result;
+      });
+
+      const node2 = knob2.node();
+      const elem2 = document.getElementById("humidity");
+      elem2.appendChild(node2);
+
+      const knob3 = pureknob.createKnob(300, 300);
+      knob3.setProperty("val", 0);
+      knob3.setProperty("angleStart", -0.75 * Math.PI);
+      knob3.setProperty("angleEnd", 0.75 * Math.PI);
+      knob3.setProperty("colorFG", "#aaccff");
+      knob3.setProperty("trackWidth", 0.4);
+      knob3.setProperty("readonly", true);
+      knob3.setProperty("valMin", 0);
+      knob3.setProperty("valMax", 150);
+      knob3.setProperty("textScale", 0.5);
+      knob3.setProperty("fnValueToString", function (value) {
+        let string = value.toString();
+        const result = string + " km/h";
+        return result;
+      });
+
+      const node3 = knob3.node();
+      const elem3 = document.getElementById("wind");
+      elem3.appendChild(node3);
+
+      const knob4 = pureknob.createKnob(300, 300);
+      knob4.setProperty("val", 0);
+      knob4.setProperty("angleStart", -0.75 * Math.PI);
+      knob4.setProperty("angleEnd", 0.75 * Math.PI);
+      knob4.setProperty("colorFG", "#ffcc00");
+      knob4.setProperty("trackWidth", 0.4);
+      knob4.setProperty("readonly", true);
+      knob4.setProperty("valMin", 900);
+      knob4.setProperty("valMax", 1100);
+      knob4.setProperty("textScale", 0.5);
+      knob4.setProperty("fnValueToString", function (value) {
+        let string = value.toString();
+        const result = string + " hPa";
+        return result;
+      });
+
+      const node4 = knob4.node();
+      const elem4 = document.getElementById("pressure");
+      elem4.appendChild(node4);
+
+      function seti3(i) {
+        i = Number(i);
+        knob4.setValue(i);
+      }
+
+      function seti(i) {
+        i = Number(i);
+        knob.setValue(i);
+        if (i > 30) {
+          knob.setProperty("colorFG", "#e01b24");
+        }
+        if ((i) => 10) {
+          if (i <= 30) {
+            knob.setProperty("colorFG", "#33cc33");
+          }
+        }
+        if (i < 10) {
+          knob.setProperty("colorFG", "#0066ff");
+        }
+      }
+
+      function seti2(i) {
+        i = Number(i);
+        knob3.setValue(i);
+        $("#wind-text").css({ fontWeight: "500" });
+        if (i < 11) {
+          document.getElementById("wind-text").innerHTML = "Vant FOARTE Usor";
+        }
+        if (i >= 11) {
+          if (i <= 21) {
+            document.getElementById("wind-text").innerHTML = "Vant Usor";
+          }
+        }
+        if (i >= 22) {
+          if (i <= 39) {
+            document.getElementById("wind-text").innerHTML =
+              "Vant Semnificativ";
+          }
+        }
+        if (i >= 40) {
+          if (i <= 51) {
+            document.getElementById("wind-text").innerHTML = "Vant Puternic";
+          }
+        }
+        if (i >= 52) {
+          if (i <= 62) {
+            document.getElementById("wind-text").innerHTML =
+              "Vant Foarte Puternic";
+          }
+        }
+        if (i >= 63) {
+          if (i <= 75) {
+            document.getElementById("wind-text").innerHTML =
+              "Vant Extrem de Puternic";
+          }
+        }
+        if (i >= 76) {
+          if (i <= 87) {
+            document.getElementById("wind-text").innerHTML =
+              "Inceput de Furtuna";
+          }
+        }
+        if (i >= 88) {
+          if (i <= 103) {
+            document.getElementById("wind-text").innerHTML = "Furtuna";
+          }
+        }
+        if (i >= 104) {
+          if (i <= 118) {
+            document.getElementById("wind-text").innerHTML = "Furtuna Violenta";
+          }
+        }
+        if (i >= 119) {
+          $("#wind-text").css({ fontWeight: "800" });
+          document.getElementById("wind-text").innerHTML = "URAGAN!!!";
+        }
+      }
+
+      function cool(key, value) {
+        console.log(key);
+        console.log(value);
+        if (key == "temperature") {
+          seti(value);
+        } else if (key == "humidity") {
+          knob2.setValue(value);
+        } else if (key == "wind") {
+          seti2(value);
+        } else if (key == "pressure") {
+          seti3(value);
+        }
+      }
+      // Fetch and display data every 800ms
+      setInterval(() => {
+        fetch("/data")
+          .then((response) => response.json())
+          .then((data) => {
+            const html = Object.entries(data)
+              .map(([key, value]) => cool(key, value))
+              .join("");
+
+            $("#dataContainer").html(html);
+          });
+      }, 800);
+    </script>
+  </body>
 </html>
