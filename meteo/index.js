@@ -18,6 +18,7 @@ app.get('/data', (req, res) => {
       const jsonData = {
         temperature: lastEntry.temperature,
         humidity: lastEntry.humidity,
+        wind: lastEntry.wind
       };
 
       res.json(jsonData);

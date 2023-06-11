@@ -9,17 +9,24 @@
       text-align: center;
       font-family: Verdana, Geneva, sans-serif; font-size: 14px;
       font-style: normal; font-variant: normal;
-      font-weight: 400;
+      font-weight: 500;
       line-height: 20px;
     }
+    
   </style>
 </head>
 <body>
   <h1>Meteo Display</h1>
   <div id="temp"></div>
   <div id="humidity"></div>
+  <div id="wind"></div>
+  <div id="wind-text">Vant Foarte Usor</div>
 
   <script>
+  $('#wind-text').css({marginTop: '-=140px'});
+  $('#humidity').css({marginTop: '-=80px'});
+  $('#wind').css({marginTop: '-=80px'});
+
   const knob = pureknob.createKnob(300, 300);
 
   knob.setProperty('val', 0);
@@ -30,7 +37,7 @@
   knob.setProperty('trackWidth', 0.4);
   knob.setProperty('readonly', true);
   knob.setProperty('valMin', -20);
-  knob.setProperty('valMax', 40);
+  knob.setProperty('valMax', 45);
   knob.setProperty('textScale', 0.75);
   knob.setProperty('fnValueToString', function(value) {
     let string = value.toString();
@@ -65,11 +72,35 @@
     return result;
   });
 
-  // Create element node.
   const node2 = knob2.node();
   // Add it to the DOM.
   const elem2 = document.getElementById('humidity');
   elem2.appendChild(node2);
+
+  const knob3 = pureknob.createKnob(300, 300);
+
+  knob3.setProperty('val', 0);
+  // Set properties.
+  knob3.setProperty('angleStart', -0.75 * Math.PI);
+  knob3.setProperty('angleEnd', 0.75 * Math.PI);
+  knob3.setProperty('colorFG', '#aaccff');
+  knob3.setProperty('trackWidth', 0.4);
+  knob3.setProperty('readonly', true);
+  knob3.setProperty('valMin', 0);
+  knob3.setProperty('valMax', 150);
+  knob3.setProperty('textScale', 0.5);
+  knob3.setProperty('fnValueToString', function(value) {
+    let string = value.toString();
+
+    const result = string + " km/h";
+    return result;
+  });
+
+  // Create element node.
+  const node3 = knob3.node();
+  // Add it to the DOM.
+  const elem3 = document.getElementById('wind');
+  elem3.appendChild(node3);
 
   function seti(i) {
     i = Number(i);
@@ -86,6 +117,59 @@
       knob.setProperty('colorFG', '#0066ff');
     }
   };
+  
+  function seti2(i) {
+    i = Number(i);
+    knob3.setValue(i);
+    $('#wind-text').css({fontWeight: '500'});
+    if (i < 11) {
+       document.getElementById("wind-text").innerHTML = "Vant FOARTE Usor";
+    }
+    if (i >= 11) {
+	if (i <= 21) {
+	   document.getElementById("wind-text").innerHTML = "Vant Usor";
+	}	
+    }
+    if (i >= 22) {
+	if (i <= 39) {
+	   document.getElementById("wind-text").innerHTML = "Vant Semnificativ";
+	}
+    }
+    if (i >= 40) {
+	if (i <= 51) {
+	   document.getElementById("wind-text").innerHTML = "Vant Puternic";
+	}
+    }
+    if (i >= 52) {
+	if (i <= 62) {
+	   document.getElementById("wind-text").innerHTML = "Vant Foarte Puternic";
+	}
+    }
+    if (i >= 63) {
+	if (i <= 75) {
+	   document.getElementById("wind-text").innerHTML = "Vant Extrem de Puternic";
+	}
+    }
+    if (i >= 76) {
+	if (i <= 87) {
+	   document.getElementById("wind-text").innerHTML = "Inceput de Furtuna";
+	}
+    }
+    if (i >= 88) {
+	if (i <= 103) {
+	   document.getElementById("wind-text").innerHTML = "Furtuna";
+	}
+    }
+    if (i >= 104) {
+	if (i <= 118) {
+	   document.getElementById("wind-text").innerHTML = "Furtuna Violenta";
+	}
+    }
+    if (i >= 119) {
+    	$('#wind-text').css({fontWeight: '800'});
+	document.getElementById("wind-text").innerHTML = "URAGAN!!!";
+    }
+  };
 
   function cool(key, value) {
     console.log(key);
@@ -94,6 +178,8 @@
       seti(value);
     } else if (key == "humidity") {
       knob2.setValue(value);
+    } else if (key == "wind") {
+      seti2(value);
     }
   }
     // Fetch and display data every 800ms
