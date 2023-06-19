@@ -14,7 +14,12 @@ app.get("/data", (req, res) => {
       data.push(row);
     })
     .on("end", () => {
-      const lastEntry = data[data.length - 1];
+      const lastEntry = data[data.length - 1] || {
+        temperature: 0,
+        humidity: 0,
+        wind: 0,
+        pressure: 0,
+      };
       const jsonData = {
         temperature: lastEntry.temperature,
         humidity: lastEntry.humidity,
